@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
@@ -13,16 +13,21 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { register } from "@/actions/auth";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-type RegisterFormValues = {
-  name: string;
-  email: string;
-  phone: string;
-  password: string;
-};
+// type RegisterFormValues = {
+//   name: string;
+//   email: string;
+//   phone: string;
+//   password: string;
+// };
 
 export default function RegisterForm() {
-  const form = useForm<RegisterFormValues>({
+  const router = useRouter();
+
+  const form = useForm<FieldValues>({
     defaultValues: {
       name: "",
       email: "",
@@ -31,10 +36,23 @@ export default function RegisterForm() {
     },
   });
 
-  const onSubmit = (values: RegisterFormValues) => {
+  const onSubmit = async (values: FieldValues) => {
     console.log("Form submitted:", values);
-  };
+    try {
+      const result = await register(values);
+      console.log(result);
 
+      if (result?.id) {
+        toast.success("Registered successfully");
+        router.push("/login");
+      } else {
+        toast.error("Registration completed but no user ID returned");
+      }
+    } catch (error) {
+      console.log("Error while registering", error);
+      toast.error("Registration failed");
+    }
+  };
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
       <Form {...form}>
