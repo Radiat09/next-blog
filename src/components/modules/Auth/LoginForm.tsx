@@ -36,15 +36,19 @@ export default function LoginForm() {
   const onSubmit = async (values: FieldValues) => {
     console.log("Form submitted:", values);
     try {
-      const result = await login(values);
-      console.log(result);
+      // const result = await login(values);
+      // console.log(result);
 
-      if (result?.id) {
-        toast.success("Logged in successfully");
-        router.push("/dashboard");
-      } else {
-        toast.error("Login completed but no user ID returned");
-      }
+      // if (result?.id) {
+      //   toast.success("Logged in successfully");
+      //   router.push("/dashboard");
+      // } else {
+      //   toast.error("Login completed but no user ID returned");
+      // }
+      signIn("credentials", {
+        ...values,
+        callbackUrl: "/dashboard",
+      });
     } catch (error) {
       console.log("Error while login", error);
       toast.error("Login failed");
